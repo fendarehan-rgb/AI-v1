@@ -1,0 +1,2917 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supriadi AI</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --glass: rgba(15,20,35,.45);
+  --glass-strong: rgba(15,20,35,.65);
+  --border: rgba(255,255,255,.14);
+  --text: #fff;
+  --muted: rgba(255,255,255,.58);
+  --accent: #9c8cff;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: Inter, Arial, sans-serif;
+  color: var(--text);
+  background: #080a12;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
+
+.background {
+  position: fixed;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5,7,15,.30),
+      rgba(5,7,15,.72)
+    ),
+    url("assets/background.jpg") center/cover no-repeat;
+
+  transform: scale(1.03);
+  z-index: -3;
+}
+
+.background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  background: rgba(5,7,15,.18);
+}
+
+.background::before {
+  content: "";
+
+  position: absolute;
+
+  width: 45vw;
+  height: 45vw;
+
+  max-width: 420px;
+  max-height: 420px;
+
+  top: 8%;
+  left: 10%;
+
+  background: rgba(150,130,255,.16);
+
+  border-radius: 50%;
+
+  filter: blur(80px);
+
+  animation:
+    floatingLight 9s ease-in-out infinite alternate;
+}
+
+@keyframes floatingLight {
+  0% {
+    transform:
+      translate(-20px,-10px)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate(80px,40px)
+      scale(1.15);
+  }
+
+  100% {
+    transform:
+      translate(20px,100px)
+      scale(.95);
+  }
+}
+
+/* =========================
+   APP
+========================= */
+
+.app {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+  height: 76px;
+
+  margin: 12px 12px 0;
+  padding: 10px 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: relative;
+  overflow: hidden;
+
+  background: var(--glass);
+
+  border: 1px solid var(--border);
+  border-radius: 24px;
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  box-shadow:
+    0 10px 40px rgba(0,0,0,.25),
+    inset 0 1px rgba(255,255,255,.08);
+}
+
+.header::before,
+.input-box::before,
+.welcome::before,
+.side-panel::before {
+
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: -120%;
+
+  width: 70%;
+  height: 100%;
+
+  background:
+    linear-gradient(
+      100deg,
+      transparent,
+      rgba(255,255,255,.07),
+      transparent
+    );
+
+  transform: skewX(-20deg);
+
+  animation:
+    glassShine 7s ease-in-out infinite;
+
+  pointer-events: none;
+}
+
+@keyframes glassShine {
+  0% {
+    left: -120%;
+  }
+
+  35%,
+  100% {
+    left: 150%;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 17px;
+
+  object-fit: cover;
+
+  border: 1px solid rgba(255,255,255,.22);
+
+  box-shadow:
+    0 0 20px rgba(156,140,255,.25);
+
+  animation:
+    avatarGlow 4s ease-in-out infinite;
+}
+
+@keyframes avatarGlow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 18px rgba(156,140,255,.20);
+  }
+
+  50% {
+    box-shadow:
+      0 0 32px rgba(156,140,255,.42);
+  }
+}
+
+.brand-text h1 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.status {
+  margin-top: 3px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+.status span {
+  display: inline-block;
+
+  width: 7px;
+  height: 7px;
+
+  margin-right: 5px;
+
+  border-radius: 50%;
+
+  background: #71e6a3;
+
+  box-shadow:
+    0 0 10px #71e6a3;
+}
+
+.menu {
+  width: 43px;
+  height: 43px;
+
+  border: 1px solid var(--border);
+  border-radius: 15px;
+
+  background: rgba(255,255,255,.07);
+
+  color: white;
+
+  font-size: 20px;
+
+  cursor: pointer;
+
+  transition: .2s;
+}
+
+.menu:hover {
+  background: rgba(255,255,255,.13);
+}
+
+.menu:active {
+  transform: scale(.88);
+}
+
+/* =========================
+   CHAT
+========================= */
+
+.chat {
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 22px 15px 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+
+  scroll-behavior: smooth;
+}
+
+.chat::-webkit-scrollbar {
+  width: 3px;
+}
+
+.chat::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.18);
+
+  border-radius: 10px;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message-row {
+  display: flex;
+
+  align-items: flex-end;
+
+  gap: 8px;
+
+  animation:
+    messageIn .35s
+    cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes messageIn {
+  from {
+    opacity: 0;
+    transform:
+      translateY(8px)
+      scale(.98);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+.message-row.user {
+  justify-content: flex-end;
+}
+
+.mini-avatar {
+  width: 30px;
+  height: 30px;
+
+  border-radius: 11px;
+
+  object-fit: cover;
+
+  border: 1px solid rgba(255,255,255,.15);
+}
+
+.message {
+  max-width: 78%;
+
+  padding: 12px 15px;
+
+  border-radius: 20px;
+
+  font-size: 14px;
+
+  line-height: 1.55;
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+}
+
+.ai-message {
+  background: rgba(255,255,255,.10);
+
+  border: 1px solid rgba(255,255,255,.13);
+
+  border-bottom-left-radius: 6px;
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.15);
+}
+
+.ai-message:hover {
+  background: rgba(255,255,255,.13);
+}
+
+.user-message {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(137,120,255,.85),
+      rgba(91,102,210,.75)
+    );
+
+  border: 1px solid rgba(255,255,255,.16);
+
+  border-bottom-right-radius: 6px;
+
+  box-shadow:
+    0 8px 25px rgba(80,70,190,.20);
+}
+
+/* =========================
+   WELCOME
+========================= */
+
+.welcome {
+  margin: auto auto 10px;
+
+  text-align: center;
+
+  max-width: 330px;
+
+  padding: 22px;
+
+  position: relative;
+  overflow: hidden;
+
+  background: rgba(255,255,255,.07);
+
+  border: 1px solid rgba(255,255,255,.12);
+
+  border-radius: 28px;
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  box-shadow:
+    0 15px 45px rgba(0,0,0,.20);
+}
+
+.welcome-avatar {
+  width: 72px;
+  height: 72px;
+
+  object-fit: cover;
+
+  border-radius: 25px;
+
+  margin-bottom: 12px;
+
+  border: 1px solid rgba(255,255,255,.2);
+
+  box-shadow:
+    0 0 35px rgba(156,140,255,.3);
+
+  animation:
+    avatarGlow 4s ease-in-out infinite;
+}
+
+.welcome h2 {
+  font-size: 20px;
+  margin-bottom: 7px;
+}
+
+.welcome p {
+  color: var(--muted);
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+/* =========================
+   TYPING
+========================= */
+
+.typing {
+  display: flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 13px 16px;
+
+  background: rgba(255,255,255,.08);
+
+  border: 1px solid var(--border);
+
+  border-radius: 18px;
+
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.typing i {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: rgba(255,255,255,.7);
+
+  animation:
+    typing 1.2s infinite;
+}
+
+.typing i:nth-child(2) {
+  animation-delay: .15s;
+}
+
+.typing i:nth-child(3) {
+  animation-delay: .3s;
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: .4;
+  }
+
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* =========================
+   INPUT
+========================= */
+
+.input-area {
+  padding: 10px 12px 14px;
+}
+
+.input-box {
+  min-height: 58px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding:
+    7px
+    7px
+    7px
+    17px;
+
+  position: relative;
+  overflow: hidden;
+
+  background: var(--glass-strong);
+
+  border: 1px solid var(--border);
+
+  border-radius: 22px;
+
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  box-shadow:
+    0 12px 40px rgba(0,0,0,.28),
+    inset 0 1px rgba(255,255,255,.06);
+
+  transition: .2s;
+}
+
+.input-box:focus-within {
+  border-color:
+    rgba(156,140,255,.35);
+
+  box-shadow:
+    0 0 0 3px rgba(156,140,255,.07),
+    0 15px 45px rgba(0,0,0,.30);
+}
+
+.input-box input {
+  flex: 1;
+
+  min-width: 0;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: white;
+
+  font-size: 14px;
+}
+
+.input-box input::placeholder {
+  color: rgba(255,255,255,.42);
+}
+
+.send {
+  width: 44px;
+  height: 44px;
+
+  border: none;
+
+  border-radius: 16px;
+
+  background: rgba(255,255,255,.13);
+
+  color: white;
+
+  font-size: 19px;
+
+  cursor: pointer;
+
+  transition: .2s;
+}
+
+.send:hover {
+  background:
+    rgba(156,140,255,.35);
+
+  box-shadow:
+    0 0 20px rgba(156,140,255,.3);
+}
+
+.send:active {
+  transform: scale(.86);
+}
+
+.send:disabled {
+  opacity: .35;
+}
+
+/* =========================
+   MENU OVERLAY
+========================= */
+
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0,0,0,.28);
+
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition:
+    opacity .25s ease,
+    visibility .25s ease;
+
+  z-index: 50;
+}
+
+.menu-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* =========================
+   SIDE PANEL
+========================= */
+
+.side-panel {
+  position: absolute;
+
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+
+  width: min(330px, calc(100% - 24px));
+
+  padding: 20px;
+
+  overflow: hidden;
+
+  background:
+    rgba(12,16,30,.78);
+
+  border:
+    1px solid rgba(255,255,255,.14);
+
+  border-radius: 28px;
+
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+
+  box-shadow:
+    -15px 0 50px rgba(0,0,0,.28);
+
+  transform:
+    translateX(110%);
+
+  transition:
+    transform .35s
+    cubic-bezier(.2,.8,.2,1);
+}
+
+.menu-overlay.open .side-panel {
+  transform:
+    translateX(0);
+}
+
+.side-title {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+}
+
+.side-title h2 {
+  font-size: 20px;
+}
+
+.close-menu {
+  width: 38px;
+  height: 38px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 13px;
+
+  background: rgba(255,255,255,.07);
+
+  color: white;
+
+  font-size: 18px;
+
+  cursor: pointer;
+}
+
+.menu-profile {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 14px;
+
+  margin-bottom: 16px;
+
+  background: rgba(255,255,255,.06);
+
+  border: 1px solid rgba(255,255,255,.10);
+
+  border-radius: 20px;
+}
+
+.menu-profile img {
+  width: 48px;
+  height: 48px;
+
+  object-fit: cover;
+
+  border-radius: 16px;
+}
+
+.menu-profile strong {
+  display: block;
+
+  font-size: 14px;
+}
+
+.menu-profile small {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+.menu-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 9px;
+}
+
+.menu-item {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 14px;
+
+  border: 1px solid transparent;
+
+  border-radius: 18px;
+
+  background: rgba(255,255,255,.055);
+
+  color: white;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition: .2s;
+}
+
+.menu-item:hover {
+  background: rgba(255,255,255,.10);
+
+  border-color:
+    rgba(255,255,255,.10);
+
+  transform: translateX(-2px);
+}
+
+.menu-icon {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 13px;
+
+  background:
+    rgba(156,140,255,.13);
+
+  font-size: 18px;
+}
+
+.menu-item-text strong {
+  display: block;
+
+  font-size: 14px;
+}
+
+.menu-item-text span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.info-modal {
+  position: fixed;
+
+  inset: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0,0,0,.45);
+
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition: .25s;
+
+  z-index: 100;
+}
+
+.info-modal.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-card {
+  width: min(360px, 100%);
+
+  padding: 24px;
+
+  text-align: center;
+
+  background:
+    rgba(15,20,35,.82);
+
+  border:
+    1px solid rgba(255,255,255,.15);
+
+  border-radius: 28px;
+
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+
+  box-shadow:
+    0 25px 80px rgba(0,0,0,.4);
+
+  transform:
+    scale(.92)
+    translateY(10px);
+
+  transition:
+    transform .3s
+    cubic-bezier(.2,.8,.2,1);
+}
+
+.info-modal.open .modal-card {
+  transform:
+    scale(1)
+    translateY(0);
+}
+
+.modal-card img {
+  width: 76px;
+  height: 76px;
+
+  object-fit: cover;
+
+  border-radius: 25px;
+
+  margin-bottom: 13px;
+
+  box-shadow:
+    0 0 30px rgba(156,140,255,.3);
+}
+
+.modal-card h2 {
+  font-size: 20px;
+
+  margin-bottom: 8px;
+}
+
+.modal-card p {
+  color: var(--muted);
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+.modal-close {
+  width: 100%;
+
+  margin-top: 18px;
+
+  padding: 12px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 15px;
+
+  background:
+    rgba(255,255,255,.08);
+
+  color: white;
+
+  cursor: pointer;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+  position: fixed;
+
+  left: 50%;
+  bottom: 82px;
+
+  padding: 11px 16px;
+
+  border-radius: 15px;
+
+  background:
+    rgba(15,20,35,.82);
+
+  border:
+    1px solid rgba(255,255,255,.13);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  color: white;
+
+  font-size: 12px;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transform:
+    translate(-50%, 15px);
+
+  transition: .3s;
+
+  z-index: 150;
+}
+
+.toast.show {
+  opacity: 1;
+
+  transform:
+    translate(-50%, 0);
+}
+
+/* =========================
+   NO GLASS MODE
+========================= */
+
+body.no-glass .header,
+body.no-glass .input-box,
+body.no-glass .welcome,
+body.no-glass .ai-message,
+body.no-glass .typing {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.no-glass .background::before {
+  display: none;
+}
+
+/* =========================
+   THEME MODES
+========================= */
+
+body.theme-glass {
+  background: #080a12;
+}
+
+body.theme-glass .background::after {
+  background: rgba(5,7,15,.18);
+}
+
+body.theme-glass .background::before {
+  opacity: 1;
+}
+
+
+body.theme-dark {
+  background: #03040a;
+}
+
+body.theme-dark .background::after {
+  background: rgba(0,0,0,.48);
+}
+
+body.theme-dark .background::before {
+  opacity: .35;
+}
+
+
+body.theme-aurora {
+  background: #080611;
+}
+
+body.theme-aurora .background::after {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(100,70,220,.20),
+      rgba(10,5,35,.45)
+    );
+}
+
+body.theme-aurora .background::before {
+  opacity: 1;
+  filter: blur(65px);
+}
+
+body.theme-aurora .header,
+body.theme-aurora .input-box,
+body.theme-aurora .welcome,
+body.theme-aurora .ai-message,
+body.theme-aurora .typing {
+  border-color:
+    rgba(170,150,255,.22);
+
+  box-shadow:
+    0 0 35px rgba(130,100,255,.10),
+    inset 0 1px rgba(255,255,255,.08);
+}
+  
+/* =========================
+   DESKTOP
+========================= */
+
+@media (min-width: 700px) {
+
+  .app {
+    max-width: 680px;
+    margin: auto;
+  }
+
+  .header {
+    margin-top: 18px;
+  }
+
+  .chat {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .input-area {
+    padding-bottom: 20px;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 480px) {
+
+  .header {
+    height: 70px;
+
+    margin:
+      9px
+      9px
+      0;
+
+    border-radius: 21px;
+  }
+
+  .avatar {
+    width: 43px;
+    height: 43px;
+
+    border-radius: 15px;
+  }
+
+  .brand-text h1 {
+    font-size: 15px;
+  }
+
+  .chat {
+    padding:
+      18px
+      11px
+      15px;
+  }
+
+  .message {
+    max-width: 84%;
+  }
+
+  .welcome {
+    max-width: 310px;
+
+    padding: 20px;
+  }
+
+  .input-area {
+    padding:
+      8px
+      9px
+      12px;
+  }
+
+  .side-panel {
+    top: 8px;
+    right: 8px;
+    bottom: 8px;
+
+    width:
+      calc(100% - 16px);
+
+    border-radius: 25px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<div class="app">
+
+  <header class="header">
+
+    <div class="brand">
+
+      <img
+        src="assets/supriadi.png"
+        class="avatar"
+        alt="Supriadi"
+      >
+
+      <div class="brand-text">
+
+        <h1>Supriadi AI</h1>
+
+        <div class="status">
+          <span></span>
+          Online
+        </div>
+
+      </div>
+
+    </div>
+
+    <button
+      id="menuButton"
+      class="menu"
+      aria-label="Buka menu"
+    >
+      ⋯
+    </button>
+
+  </header>
+
+
+  <main id="chat" class="chat">
+
+    <div class="welcome">
+
+      <img
+        src="assets/supriadi.png"
+        class="welcome-avatar"
+        alt="Supriadi"
+      >
+
+      <h2>Halo, Fenda 👋</h2>
+
+      <p>
+        Aku Supriadi AI.
+        Ceritakan apa saja, kita ngobrol dari sini.
+      </p>
+
+    </div>
+
+  </main>
+
+
+  <div class="input-area">
+
+    <div class="input-box">
+
+      <input
+        id="messageInput"
+        type="text"
+        placeholder="Tulis sesuatu..."
+        autocomplete="off"
+      >
+
+      <button
+        id="sendButton"
+        class="send"
+        aria-label="Kirim"
+      >
+        ↑
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     MENU
+========================= -->
+
+<div
+  id="menuOverlay"
+  class="menu-overlay"
+>
+
+  <aside class="side-panel">
+
+    <div class="side-title">
+
+      <h2>Supriadi</h2>
+
+      <button
+        id="closeMenu"
+        class="close-menu"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="menu-profile">
+
+      <img
+        src="assets/supriadi.png"
+        alt="Supriadi"
+      >
+
+      <div>
+
+        <strong>Supriadi AI</strong>
+
+        <small>Asisten pribadi yang di buat fenda</small>
+
+      </div>
+
+    </div>
+
+
+    <div class="menu-list">
+
+      <button
+        class="menu-item"
+        id="newChat"
+      >
+
+        <div class="menu-icon">
+          🆕
+        </div>
+
+        <div class="menu-item-text">
+
+          <strong>Chat Baru</strong>
+
+          <span>Mulai percakapan baru</span>
+
+        </div>
+
+      </button>
+
+
+      <button
+        class="menu-item"
+        id="memoryButton"
+      >
+
+        <div class="menu-icon">
+          🧠
+        </div>
+
+        <div class="menu-item-text">
+
+          <strong>Memory</strong>
+
+          <span>Lihat status memory percakapan</span>
+
+        </div>
+
+      </button>
+
+      <button
+        class="menu-item"
+        id="quickCommandButton"
+      >
+
+        <div class="menu-icon">
+          ⚡
+        </div>
+
+        <div class="menu-item-text">
+
+          <strong>Quick Commands</strong>
+
+          <span>Perintah cepat untuk Supriadi</span>
+
+        </div>
+
+              <button
+        class="menu-item"
+        id="profileButton"
+      >
+
+        <div class="menu-icon">
+          👤
+        </div>
+
+        <div class="menu-item-text">
+
+          <strong>Profil Fenda</strong>
+
+          <span>Pembuat Supriadi AI</span>
+
+        </div>
+
+      </button>
+        
+      </button>
+      <button
+        class="menu-item"
+        id="themeButton"
+      >
+
+        <div class="menu-icon">
+          ✨
+        </div>
+
+        <div class="menu-item-text">
+
+          <strong>Tampilan</strong>
+
+          <span id="themeText">
+            Glass aktif
+          </span>
+
+        </div>
+
+      </button>
+
+
+      <button
+        class="menu-item"
+        id="aboutButton"
+      >
+
+        <div class="menu-icon">
+          ℹ️
+        </div>
+
+        <div class="menu-item-text">
+
+          <strong>Tentang Supriadi</strong>
+
+          <span>Informasi tentang AI ini</span>
+
+        </div>
+
+      </button>
+
+    </div>
+
+  </aside>
+
+</div>
+
+
+<!-- =========================
+     INFO MODAL
+========================= -->
+
+<div
+  id="infoModal"
+  class="info-modal"
+>
+
+  <div class="modal-card">
+
+    <img
+      src="assets/supriadi.png"
+      alt="Supriadi"
+    >
+
+    <h2>Supriadi AI</h2>
+
+    <p>
+      Asisten AI pribadi buatan Fenda.
+      Dibangun selama 3 hari
+      menggunakan Supabase dan
+      VS code dengan sistem memory
+      percakapan.
+    </p>
+
+    <button
+      id="modalClose"
+      class="modal-close"
+    >
+      Tutup
+    </button>
+
+  </div>
+
+</div>
+
+
+<div
+  id="toast"
+  class="toast"
+></div>
+
+
+<script>
+
+/* =========================
+   API
+========================= */
+
+const API_URL =
+"https://hkynwyvxkjnczozujcat.supabase.co/functions/v1/supriadi-ai";
+
+
+/* =========================
+   SESSION
+========================= */
+
+let sessionId =
+localStorage.getItem(
+  "supriadi_session"
+);
+
+
+function createSession() {
+
+  sessionId =
+    "session-" +
+    Date.now() +
+    "-" +
+    Math.random()
+      .toString(36)
+      .substring(2,10);
+
+  localStorage.setItem(
+    "supriadi_session",
+    sessionId
+  );
+
+}
+
+
+if (!sessionId) {
+  createSession();
+}
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const chat =
+document.getElementById("chat");
+
+const input =
+document.getElementById(
+  "messageInput"
+);
+
+const sendButton =
+document.getElementById(
+  "sendButton"
+);
+
+const menuButton =
+document.getElementById(
+  "menuButton"
+);
+
+const menuOverlay =
+document.getElementById(
+  "menuOverlay"
+);
+
+const closeMenu =
+document.getElementById(
+  "closeMenu"
+);
+
+const newChat =
+document.getElementById(
+  "newChat"
+);
+
+const memoryButton =
+document.getElementById(
+  "memoryButton"
+);
+
+const quickCommandButton =
+document.getElementById(
+  "quickCommandButton"
+);
+const profileButton =
+document.getElementById(
+  "profileButton"
+);
+  
+const themeButton =
+document.getElementById(
+  "themeButton"
+);
+
+const themeText =
+document.getElementById(
+  "themeText"
+);
+
+const aboutButton =
+document.getElementById(
+  "aboutButton"
+);
+
+const infoModal =
+document.getElementById(
+  "infoModal"
+);
+
+const modalClose =
+document.getElementById(
+  "modalClose"
+);
+
+const toast =
+document.getElementById(
+  "toast"
+);
+
+
+/* =========================
+   TOAST
+========================= */
+
+let toastTimer;
+
+function showToast(text) {
+
+  toast.textContent =
+    text;
+
+  toast.classList.add(
+    "show"
+  );
+
+  clearTimeout(
+    toastTimer
+  );
+
+  toastTimer =
+    setTimeout(
+      () => {
+        toast.classList.remove(
+          "show"
+        );
+      },
+      2200
+    );
+}
+
+
+/* =========================
+   SCROLL
+========================= */
+
+function scrollBottom() {
+
+  chat.scrollTop =
+    chat.scrollHeight;
+
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+function addMessage(
+  text,
+  type
+) {
+
+  const row =
+    document.createElement(
+      "div"
+    );
+
+  row.className =
+    "message-row " +
+    type;
+
+
+  if (type === "ai") {
+
+    const avatar =
+      document.createElement(
+        "img"
+      );
+
+    avatar.src =
+      "assets/supriadi.png";
+
+    avatar.className =
+      "mini-avatar";
+
+    avatar.alt =
+      "Supriadi";
+
+    row.appendChild(
+      avatar
+    );
+
+  }
+
+
+  const bubble =
+    document.createElement(
+      "div"
+    );
+
+  bubble.className =
+    "message " +
+    (
+      type === "ai"
+        ? "ai-message"
+        : "user-message"
+    );
+
+  bubble.textContent =
+    text;
+
+
+  row.appendChild(
+    bubble
+  );
+
+  chat.appendChild(
+    row
+  );
+
+  scrollBottom();
+
+  return row;
+}
+
+
+/* =========================
+   TYPING
+========================= */
+
+function addTyping() {
+
+  const row =
+    document.createElement(
+      "div"
+    );
+
+  row.className =
+    "message-row ai";
+
+
+  const avatar =
+    document.createElement(
+      "img"
+    );
+
+  avatar.src =
+    "assets/supriadi.png";
+
+  avatar.className =
+    "mini-avatar";
+
+  avatar.alt =
+    "Supriadi";
+
+
+  const typing =
+    document.createElement(
+      "div"
+    );
+
+  typing.className =
+    "typing";
+
+  typing.innerHTML =
+    "<i></i><i></i><i></i>";
+
+
+  row.appendChild(
+    avatar
+  );
+
+  row.appendChild(
+    typing
+  );
+
+  chat.appendChild(
+    row
+  );
+
+  scrollBottom();
+
+  return row;
+}
+
+
+/* =========================
+   SEND MESSAGE
+========================= */
+
+async function sendMessage() {
+
+  const message =
+    input.value.trim();
+
+
+  if (!message) {
+    return;
+  }
+
+
+  input.value = "";
+
+  sendButton.disabled =
+    true;
+
+
+  const welcome =
+    document.querySelector(
+      ".welcome"
+    );
+
+
+  if (welcome) {
+    welcome.remove();
+  }
+
+
+  addMessage(
+    message,
+    "user"
+  );
+
+
+  const typing =
+    addTyping();
+
+
+  try {
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+
+              message:
+                message,
+
+              session_id:
+                sessionId
+
+            })
+
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    typing.remove();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "Server error"
+      );
+
+    }
+
+
+    addMessage(
+      data.message ||
+      "Maaf, aku tidak mendapat jawaban.",
+      "ai"
+    );
+
+
+  } catch (error) {
+
+    typing.remove();
+
+    addMessage(
+      "❌ Gagal terhubung.\n" +
+      error.message,
+      "ai"
+    );
+
+  }
+
+
+  sendButton.disabled =
+    false;
+
+  input.focus();
+}
+
+
+/* =========================
+   MENU
+========================= */
+
+function openMenu() {
+
+  menuOverlay.classList.add(
+    "open"
+  );
+
+}
+
+function closeMenuPanel() {
+
+  menuOverlay.classList.remove(
+    "open"
+  );
+
+}
+
+
+menuButton.addEventListener(
+  "click",
+  openMenu
+);
+
+
+closeMenu.addEventListener(
+  "click",
+  closeMenuPanel
+);
+
+
+menuOverlay.addEventListener(
+  "click",
+  function(event) {
+
+    if (
+      event.target ===
+      menuOverlay
+    ) {
+
+      closeMenuPanel();
+
+    }
+
+  }
+);
+
+
+/* =========================
+   CHAT BARU
+========================= */
+
+newChat.addEventListener(
+  "click",
+  function() {
+
+    createSession();
+
+    chat.innerHTML = `
+
+      <div class="welcome">
+
+        <img
+          src="assets/supriadi.png"
+          class="welcome-avatar"
+          alt="Supriadi"
+        >
+
+        <h2>Chat baru 👋</h2>
+
+        <p>
+          Session baru sudah dibuat.
+          Yuk mulai ngobrol lagi.
+        </p>
+
+      </div>
+
+    `;
+
+    closeMenuPanel();
+
+    showToast(
+      "✨ Chat baru dibuat"
+    );
+
+    input.focus();
+
+  }
+);
+
+
+/* =========================
+   MEMORY SYSTEM
+========================= */
+
+async function openMemory() {
+
+  closeMenuPanel();
+
+  const modal =
+    document.createElement("div");
+
+  modal.className =
+    "info-modal open";
+
+  modal.id =
+    "memoryModal";
+
+  modal.innerHTML = `
+
+    <div
+      class="modal-card"
+      style="
+        width:min(430px,100%);
+        max-height:82vh;
+        overflow:hidden;
+        text-align:left;
+      "
+    >
+
+      <div
+        style="
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          margin-bottom:15px;
+        "
+      >
+
+        <div>
+
+          <h2 style="margin:0;">
+            🧠 Memory
+          </h2>
+
+          <p
+            id="memoryCount"
+            style="
+              margin-top:4px;
+              font-size:11px;
+            "
+          >
+            Memuat memory...
+          </p>
+
+        </div>
+
+        <button
+          id="memoryClose"
+          style="
+            width:38px;
+            height:38px;
+            border:1px solid var(--border);
+            border-radius:13px;
+            background:rgba(255,255,255,.07);
+            color:white;
+            font-size:18px;
+            cursor:pointer;
+          "
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div
+        id="memoryList"
+        style="
+          max-height:52vh;
+          overflow-y:auto;
+          display:flex;
+          flex-direction:column;
+          gap:8px;
+          padding-right:3px;
+        "
+      >
+
+        <div
+          style="
+            text-align:center;
+            padding:25px 10px;
+            color:var(--muted);
+            font-size:13px;
+          "
+        >
+          Memuat...
+        </div>
+
+      </div>
+
+
+      <button
+        id="clearMemory"
+        style="
+          width:100%;
+          margin-top:15px;
+          padding:12px;
+          border:1px solid rgba(255,100,100,.25);
+          border-radius:15px;
+          background:rgba(255,70,70,.10);
+          color:#ffb0b0;
+          cursor:pointer;
+        "
+      >
+        🗑️ Hapus Semua Memory
+      </button>
+
+    </div>
+
+  `;
+
+
+  document.body.appendChild(
+    modal
+  );
+
+
+  const memoryList =
+    document.getElementById(
+      "memoryList"
+    );
+
+  const memoryCount =
+    document.getElementById(
+      "memoryCount"
+    );
+
+  const memoryClose =
+    document.getElementById(
+      "memoryClose"
+    );
+
+  const clearMemory =
+    document.getElementById(
+      "clearMemory"
+    );
+
+
+  memoryClose.onclick =
+    function() {
+
+      modal.remove();
+
+    };
+
+
+  modal.onclick =
+    function(event) {
+
+      if (
+        event.target === modal
+      ) {
+
+        modal.remove();
+
+      }
+
+    };
+
+
+  try {
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+
+              action:
+                "get_memory",
+
+              session_id:
+                sessionId
+
+            })
+
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "Gagal mengambil memory"
+      );
+
+    }
+
+
+    memoryCount.textContent =
+      `${data.memory_count || 0} memory tersimpan`;
+
+
+    if (
+      !data.memories ||
+      data.memories.length === 0
+    ) {
+
+      memoryList.innerHTML = `
+
+        <div
+          style="
+            text-align:center;
+            padding:30px 10px;
+            color:var(--muted);
+            font-size:13px;
+          "
+        >
+          💤 Belum ada memory.
+          <br>
+          Mulai ngobrol dulu dengan Supriadi.
+        </div>
+
+      `;
+
+    } else {
+
+      memoryList.innerHTML =
+        data.memories
+          .reverse()
+          .map(
+            memory => {
+
+              const isUser =
+                memory.role === "user";
+
+              return `
+
+                <div
+                  style="
+                    padding:11px 12px;
+                    border-radius:15px;
+                    background:
+                      ${
+                        isUser
+                          ? "rgba(137,120,255,.13)"
+                          : "rgba(255,255,255,.07)"
+                      };
+                    border:
+                      1px solid
+                      rgba(255,255,255,.08);
+                  "
+                >
+
+                  <div
+                    style="
+                      font-size:10px;
+                      color:
+                        ${
+                          isUser
+                            ? "#b8adff"
+                            : "#8ff0b7"
+                        };
+                      margin-bottom:5px;
+                      font-weight:700;
+                    "
+                  >
+                    ${
+                      isUser
+                        ? "👤 KAMU"
+                        : "🤖 SUPRIADI"
+                    }
+                  </div>
+
+                  <div
+                    style="
+                      font-size:12px;
+                      line-height:1.5;
+                      color:rgba(255,255,255,.88);
+                      white-space:pre-wrap;
+                      word-break:break-word;
+                    "
+                  >
+                    ${escapeMemoryHTML(
+                      memory.content
+                    )}
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+  } catch (error) {
+
+    memoryCount.textContent =
+      "Gagal memuat memory";
+
+    memoryList.innerHTML = `
+
+      <div
+        style="
+          text-align:center;
+          padding:25px 10px;
+          color:#ffaaaa;
+          font-size:13px;
+        "
+      >
+        ❌ ${escapeMemoryHTML(
+          error.message
+        )}
+      </div>
+
+    `;
+
+  }
+
+
+  clearMemory.onclick =
+    async function() {
+
+      const yakin =
+        confirm(
+          "Hapus semua memory percakapan ini?"
+        );
+
+      if (!yakin) {
+        return;
+      }
+
+
+      clearMemory.disabled =
+        true;
+
+      clearMemory.textContent =
+        "⏳ Menghapus...";
+
+
+      try {
+
+        const response =
+          await fetch(
+            API_URL,
+            {
+
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body:
+                JSON.stringify({
+
+                  action:
+                    "clear_memory",
+
+                  session_id:
+                    sessionId
+
+                })
+
+            }
+          );
+
+
+        const data =
+          await response.json();
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.error ||
+            "Gagal menghapus memory"
+          );
+
+        }
+
+
+        memoryCount.textContent =
+          "0 memory tersimpan";
+
+
+        memoryList.innerHTML = `
+
+          <div
+            style="
+              text-align:center;
+              padding:30px 10px;
+              color:var(--muted);
+              font-size:13px;
+            "
+          >
+            🧹 Semua memory sudah dihapus.
+          </div>
+
+        `;
+
+
+        showToast(
+          "🧹 Semua memory dihapus"
+        );
+
+
+        clearMemory.textContent =
+          "🗑️ Hapus Semua Memory";
+
+        clearMemory.disabled =
+          false;
+
+
+      } catch (error) {
+
+        showToast(
+          "❌ " +
+          error.message
+        );
+
+        clearMemory.textContent =
+          "🗑️ Hapus Semua Memory";
+
+        clearMemory.disabled =
+          false;
+
+      }
+
+    };
+
+}
+
+
+/* =========================
+   MEMORY HTML ESCAPE
+========================= */
+
+function escapeMemoryHTML(text) {
+
+  return String(text)
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+/* =========================
+   MEMORY BUTTON
+========================= */
+
+memoryButton.addEventListener(
+  "click",
+  openMemory
+);
+
+  profileButton.addEventListener(
+  "click",
+  function() {
+
+    closeMenuPanel();
+
+    const modal =
+      document.createElement("div");
+
+    modal.className =
+      "info-modal open";
+
+    modal.innerHTML = `
+
+      <div
+        class="modal-card"
+        style="
+          width:min(400px,100%);
+          text-align:center;
+        "
+      >
+
+        <<div
+  style="
+    width:90px;
+    height:90px;
+    margin:0 auto 15px;
+    border-radius:50%;
+    overflow:hidden;
+    border:2px solid rgba(170,150,255,.35);
+    box-shadow:0 0 30px rgba(130,100,255,.25);
+  "
+>
+  <img
+    src="assets/fenda.jpg"
+    alt="Fenda"
+    style="
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    "
+  >
+</div>
+        <h2>
+          Fenda
+        </h2>
+
+        <p
+          style="
+            margin-top:7px;
+            color:var(--muted);
+            font-size:13px;
+          "
+        >
+          Creator & Owner
+        </p>
+
+        <div
+          style="
+            margin-top:20px;
+            padding:15px;
+            border-radius:16px;
+            background:rgba(255,255,255,.05);
+            border:1px solid var(--border);
+            text-align:left;
+            font-size:13px;
+            line-height:1.7;
+          "
+        >
+
+          🤖 <strong>Supriadi AI</strong><br>
+          Dibuat dan dikembangkan oleh Fenda yang baik, pintar,dan tidak sombong.<br><br>
+
+          💻 Passionate tentang teknologi,
+          coding, AI, dan pengembangan aplikasi.
+
+        </div>
+
+        <button
+          id="profileClose"
+          style="
+            width:100%;
+            margin-top:15px;
+            padding:11px;
+            border:1px solid var(--border);
+            border-radius:14px;
+            background:rgba(255,255,255,.06);
+            color:white;
+            cursor:pointer;
+          "
+        >
+          Tutup
+        </button>
+
+      </div>
+
+    `;
+
+    document.body.appendChild(modal);
+
+    document
+      .getElementById("profileClose")
+      .onclick = function() {
+        modal.remove();
+      };
+
+    modal.onclick = function(event) {
+      if (event.target === modal) {
+        modal.remove();
+      }
+    };
+
+  }
+);
+  
+quickCommandButton.addEventListener(
+  "click",
+  function() {
+
+    closeMenuPanel();
+
+    const commands = [
+      "💡 Buatkan aku ide kreatif",
+      "🧠 Jelaskan ini dengan sederhana",
+      "✍️ Buatkan teks yang bagus",
+      "💻 Bantu aku coding",
+      "😂 Roasting aku"
+    ];
+
+    const modal =
+      document.createElement("div");
+
+    modal.className =
+      "info-modal open";
+
+    modal.innerHTML = `
+
+      <div
+        class="modal-card"
+        style="
+          width:min(400px,100%);
+          text-align:left;
+        "
+      >
+
+        <h2 style="margin-bottom:6px;">
+          ⚡ Quick Commands
+        </h2>
+
+        <p
+          style="
+            font-size:12px;
+            color:var(--muted);
+            margin-bottom:18px;
+          "
+        >
+          Pilih perintah untuk Supriadi.
+        </p>
+
+        <div
+          style="
+            display:flex;
+            flex-direction:column;
+            gap:9px;
+          "
+        >
+
+          ${commands.map(command => `
+            <button
+              class="menu-item quick-command-item"
+              style="width:100%;"
+              data-command="${command}"
+            >
+              ${command}
+            </button>
+          `).join("")}
+
+        </div>
+
+        <button
+          id="quickCommandClose"
+          style="
+            width:100%;
+            margin-top:15px;
+            padding:11px;
+            border:1px solid var(--border);
+            border-radius:14px;
+            background:rgba(255,255,255,.06);
+            color:white;
+            cursor:pointer;
+          "
+        >
+          Tutup
+        </button>
+
+      </div>
+
+    `;
+
+    document.body.appendChild(modal);
+
+    document
+      .getElementById("quickCommandClose")
+      .onclick = function() {
+        modal.remove();
+      };
+
+    modal.onclick = function(event) {
+      if (event.target === modal) {
+        modal.remove();
+      }
+    };
+
+    modal
+      .querySelectorAll(".quick-command-item")
+      .forEach(button => {
+
+        button.onclick = function() {
+
+          const command =
+            this.dataset.command
+              .replace(
+                /^[^\s]+\s/,
+                ""
+              );
+
+          modal.remove();
+
+          messageInput.value =
+            command;
+
+          messageInput.focus();
+
+        };
+
+      });
+
+  }
+);
+
+/* =========================
+   THEME SYSTEM
+========================= */
+
+const savedTheme =
+  localStorage.getItem(
+    "supriadi_theme"
+  ) || "glass";
+
+
+let currentTheme =
+  savedTheme;
+
+
+function applyTheme() {
+
+  document.body.classList.remove(
+    "theme-glass",
+    "theme-dark",
+    "theme-aurora"
+  );
+
+
+  document.body.classList.add(
+    "theme-" + currentTheme
+  );
+
+
+  if (currentTheme === "glass") {
+
+    themeText.textContent =
+      "🌌 Glass";
+
+  }
+
+  else if (currentTheme === "dark") {
+
+    themeText.textContent =
+      "🌑 Dark";
+
+  }
+
+  else if (currentTheme === "aurora") {
+
+    themeText.textContent =
+      "✨ Aurora";
+
+  }
+
+}
+
+
+applyTheme();
+
+
+themeButton.addEventListener(
+  "click",
+  function() {
+
+    if (currentTheme === "glass") {
+
+      currentTheme = "dark";
+
+    }
+
+    else if (currentTheme === "dark") {
+
+      currentTheme = "aurora";
+
+    }
+
+    else {
+
+      currentTheme = "glass";
+
+    }
+
+
+    localStorage.setItem(
+      "supriadi_theme",
+      currentTheme
+    );
+
+
+    applyTheme();
+
+
+    showToast(
+
+      currentTheme === "glass"
+        ? "🌌 Glass mode aktif"
+
+        : currentTheme === "dark"
+          ? "🌑 Dark mode aktif"
+
+          : "✨ Aurora mode aktif"
+
+    );
+
+  }
+);
+
+
+/* =========================
+   ABOUT
+========================= */
+
+aboutButton.addEventListener(
+  "click",
+  function() {
+
+    closeMenuPanel();
+
+    infoModal.classList.add(
+      "open"
+    );
+
+  }
+);
+
+
+modalClose.addEventListener(
+  "click",
+  function() {
+
+    infoModal.classList.remove(
+      "open"
+    );
+
+  }
+);
+
+
+infoModal.addEventListener(
+  "click",
+  function(event) {
+
+    if (
+      event.target ===
+      infoModal
+    ) {
+
+      infoModal.classList.remove(
+        "open"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================
+   EVENTS
+========================= */
+
+sendButton.addEventListener(
+  "click",
+  sendMessage
+);
+
+
+input.addEventListener(
+  "keydown",
+  function(event) {
+
+    if (
+      event.key === "Enter"
+    ) {
+
+      event.preventDefault();
+
+      sendMessage();
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
